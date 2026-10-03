@@ -266,12 +266,12 @@ body {
 .input-area button:active { transform: translateY(0); }
 .input-area button:focus-visible { outline: 2px solid #c1b8ff; outline-offset: 2px; }
 
-.send-button {
-    background: #7565e8;
-    box-shadow: 0 5px 16px rgba(117, 101, 232, 0.2);
-}
+/*.send-button {*/
+/*    background: #7565e8;*/
+/*    box-shadow: 0 5px 16px rgba(117, 101, 232, 0.2);*/
+/*}*/
 
-.send-button:hover { background: #8677f2; }
+/*.send-button:hover { background: #8677f2; }*/
 
 .stream-button {
     border-color: rgba(180, 193, 220, 0.14) !important;
