@@ -1,6 +1,6 @@
 import requests
 import json
-
+import markdown
 
 class Chatbot:
     def __init__(self,api_key,model="inclusionai/ling-3.0-flash-vl:free"):
@@ -33,9 +33,9 @@ class Chatbot:
         })
         return assistant_message.get('content')
 
-
     def ask_stream(self, question):
         self.messages.append({"role": "user", "content": question})
+        answer_parts = []
 
         with requests.post(
                 url=self.url,
@@ -46,22 +46,37 @@ class Chatbot:
                 json={
                     "model": self.model,
                     "stream": True,
-                    "messages": self.messages
+                    "messages": self.messages,
                 },
-                stream=True
-        ) as r:
+                stream=True,
+                timeout=60,
+        ) as response:
+            response.raise_for_status()
 
-            for line in r.iter_lines():
-                if not line:
+            for line in response.iter_lines():
+                if not line or not line.startswith(b"data: "):
                     continue
 
-                try:
-                    data = json.loads(line.decode("utf-8").replace("data: ", ""))
-                    delta = data["choices"][0]["delta"].get("content", "")
-                    if delta:
-                        yield delta
-                except:
+                data = line[len(b"data: "):]
+
+                if data == b"[DONE]":
+                    break
+
+                event = json.loads(data)
+                choices = event.get("choices", [])
+                if not choices:
                     continue
+
+                chunk = choices[0].get("delta", {}).get("content", "")
+                if chunk:
+                    answer_parts.append(chunk)
+                    yield chunk
+
+        # Save the finished assistant reply for the next turn.
+        self.messages.append({
+            "role": "assistant",
+            "content": "".join(answer_parts),
+        })
 
 
 
