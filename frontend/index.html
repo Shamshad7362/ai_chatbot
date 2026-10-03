@@ -10,6 +10,7 @@
 
     <h2 class="title">AI Chatbot</h2>
 
+
     <div id="chat-box" class="chat-box">
 
         {% for msg in history %}
@@ -25,12 +26,13 @@
         {% endfor %}
 
     </div>
-
+     <div id="stream-output" class="bot-message"></div>
     <form method="post" action="/ask" class="input-area">
         <input type="text" name="message" placeholder="Ask Something..." required>
         <button type="submit">Send</button>
+        <button type="button" onclick="sendStream()">Stream</button>
     </form>
-
+<script src="assets/script.js"></script>
 </div>
 
 
